@@ -1,0 +1,84 @@
+
+#This program implements a client/server application (IRC, Internet Relay Chat) using the socket interface and TCP protocol. This program can be used as Internet relay chat application. 
+
+#This application has two programs "client" and "server".
+
+#The client program should be run on the client machine. The client program requies a "client.conf" file as input. This file conatins
+ the server ip address and port number in below format.
+
+SERVER_IP=<ip-address-of-server-machine>
+SERVER_PORT=<server-port-number>
+
+#The server progrm should be run on the server machine. The server program rrequires a "server.conf" file as input. This file contians
+ the server PORT_NUMBER in below format.
+
+NICK=<server_nickname>
+PASS=
+PORT=9009
+SERVERS=
+SOCK_ADDR=
+
+#The server program uses below files for compilation:
+ 1. server.cpp, server.h
+ 2. worker.cpp, worker.h
+ 3. nick_cmd.cpp, user_cmd.cpp, time_cmd.cpp, privmsg_cmd.cpp, join_cmd.cpp, topic_cmd.cpp, names_cmd.cpp, part_cmd.cpp, quit_cmd.cpp
+ 4. all_cmd_common.cpp all_cmd_common.h
+
+#The client program uses below files for compilation:
+ 1. client.cpp, client.h
+
+#To compile the client and server program use below make commands:
+ 1. >$ make clean
+ 2. >$ make
+
+#To run server program on a server machine:
+ 1. On server machine
+   >$ ./server server.conf
+
+#To run client program on a client machine:
+ 1. On client machine
+   >$ ./client client.conf
+
+# We have used POSIX thread or pthread APIs <pthread.h> to implement multithreading inside the TCP server.
+
+# We have all the commands as mentioned inside the project requirment and all the reponse code as mentioned in RFC for these commands:
+  List of commands which we have implemented:
+  1. NICK
+     To define nick name of a user or client.
+     $ NICK khushboo
+  2. USER
+     To register the user by providing additional information of user like username and user full name.
+     $USER <last-name> 0 * :<last-name first-name>
+     e.g. USER sinha 0 * :sinha khushboo
+  3. TIME
+  4. QUIT
+  5. JOIN 
+     To join and create(when you join first time) a channel.
+     It also broadcasts join message to all other users of the channel
+     as well as new user get reply from server about all other users nick name.
+
+     $JOIN #<channel name>
+
+  6. TOPIC (set, unset, list/view)
+     At a time, only one topic can be present inside a channel.
+     6.a. To define new topic => TOPIC #<channel name> :<topic name>
+          TOPIC #STUDY :physics
+     6.b. To change topic => TOPIC #<channel name> :<new topic name> 
+          TOPIC #STUDY :film
+     6.c. To list topic   => TOPIC #<channel name>
+          TOPIC #STUDY
+     6.d. To remove topic => TOPIC #<channel name> :
+          TOPIC #STUDY :
+  7. PRIVMSG
+     To send message to another user(1 user) or all users(broadcast) inside a channel
+     7.a. PRIVMSG <nick name of another user> :<message>
+          PRIVMSG khushboo :hi
+     7.b. PRIVMSG #< name of channel> :<message>
+          PRIVMSG #STUDY :hello everyone
+  8. NAMES
+     List of all nick names who have joined the channel
+     8.a. NAMES
+  9. PART
+     To leave the channel. It will broadcast leaving message to all other users present inside the channel.
+     $ PART #<channel name> :<broadcast leaving message>
+       e.g. PART #STUDY : Bye! I am leaving
